@@ -1,5 +1,6 @@
 import API from './search.js';
 import { Notify } from 'notiflix';
+import { createMarkup } from './createMarkup.js';
 const refs = {
   formEl: document.getElementById('search-form'),
   imagesEl: document.querySelector('.gallery'),
@@ -28,34 +29,6 @@ function onSubmit(evt) {
 function onError(err) {
   Notify.failure(err.message);
   console.error(err);
-}
-
-function createMarkup({
-  webformatURL,
-  largeImageURL,
-  tags,
-  likes,
-  views,
-  comments,
-  downloads,
-}) {
-  return `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-  <div class="info">
-    <p class="info-item">
-      <b>Likes</b><br> ${likes}
-    </p>
-    <p class="info-item">
-      <b>Views</b><br> ${views}
-    </p>
-    <p class="info-item">
-      <b>Comments</b><br> ${comments}
-    </p>
-    <p class="info-item">
-      <b>Downloads</b><br> ${downloads}
-    </p>
-  </div>
-</div>`;
 }
 
 function updateDivGallery(markup) {
