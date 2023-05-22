@@ -1,5 +1,5 @@
 const URL = 'https://pixabay.com/api/';
-
+const API_KEY = '36597774-2e36ba17425207cc180a817c1';
 const q = '';
 const params = 'image_type=photo&orientation=horizontal&safesearch=true';
 
