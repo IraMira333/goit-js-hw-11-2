@@ -19,6 +19,7 @@ function onSubmit(evt) {
   if (value === '') return Notify.failure('No search query!');
   else {
     searchValue = value;
+    page = 1;
 
     API.searchFoto(value)
       .then(({ hits }) => {
@@ -44,5 +45,6 @@ function updateDivGallery(markup) {
 }
 
 function onLoadMore() {
-  API.searchFoto(searchValue);
+  page += 1;
+  API.searchFoto(searchValue, page);
 }
