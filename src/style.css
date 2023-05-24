@@ -54,3 +54,6 @@ button {
   background-color: #c1c1c1;
   cursor: none;
 }
+.hidden {
+  display: none;
+}
