@@ -2,11 +2,14 @@ import { Notify } from 'notiflix';
 import { createMarkup } from './createMarkup.js';
 import SearchImageService from './SearchImageService.js';
 import LoadMoreBtn from './components/LoadMoreBtn.js';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 const refs = {
   formEl: document.getElementById('search-form'),
   imagesEl: document.querySelector('.gallery'),
 };
-
+let gallery;
 const searchImageService = new SearchImageService();
 const loadMoreBtn = new LoadMoreBtn({
   selector: '.load-more',
@@ -54,6 +57,17 @@ async function onLoadMore() {
     }
 
     updateDivGallery(markup);
+    gallery = new SimpleLightbox('a', {
+      showCounter: true,
+      captions: true,
+    }).refresh();
+    const { height: cardHeight } =
+      imagesEl.firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
   } catch (err) {}
   loadMoreBtn.enable();
 }
