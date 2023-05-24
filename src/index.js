@@ -1,17 +1,20 @@
 import { Notify } from 'notiflix';
 import { createMarkup } from './createMarkup.js';
 import SearchImageService from './SearchImageService.js';
-
+import LoadMoreBtn from './components/LoadMoreBtn.js';
 const refs = {
   formEl: document.getElementById('search-form'),
   imagesEl: document.querySelector('.gallery'),
-  loadMoreEl: document.querySelector('.load-more'),
 };
 
 const searchImageService = new SearchImageService();
+const loadMoreBtn = new LoadMoreBtn({
+  selector: '.load-more',
+  isHidden: true,
+});
 
 refs.formEl.addEventListener('submit', onSubmit);
-refs.loadMoreEl.addEventListener('click', onLoadMore);
+loadMoreBtn.button.addEventListener('click', onLoadMore);
 
 function onSubmit(evt) {
   evt.preventDefault();
@@ -21,14 +24,17 @@ function onSubmit(evt) {
   else {
     searchImageService.query = value;
     searchImageService.page = 1;
+    loadMoreBtn.show();
     clearDivGallery();
-    getDataForMarkup();
+    loadMoreBtn.disable();
+    getDataForMarkup().then(() => loadMoreBtn.enable());
   }
 }
 
 function onError(err) {
   Notify.failure(err.message);
   console.error(err);
+  loadMoreBtn.hide();
 }
 
 function updateDivGallery(markup) {
@@ -39,20 +45,27 @@ function clearDivGallery() {
 }
 
 function onLoadMore() {
-  getDataForMarkup();
+  loadMoreBtn.disable();
+  getDataForMarkup().then(() => loadMoreBtn.enable());
 }
 
 function getDataForMarkup() {
   return searchImageService
     .searchFoto()
     .then(hits => {
-      console.log(hits);
-      if (hits.length === 0)
+      console.log(hits.length);
+      console.log(searchImageService.per_page);
+      if (hits.length < searchImageService.per_page) {
+        loadMoreBtn.end();
+      }
+      if (hits.length === 0) {
         throw new Error(
           'Sorry, there are no images matching your search query. Please try again.'
         );
+      }
       return hits.reduce((markup, hit) => markup + createMarkup(hit), '');
     })
     .then(updateDivGallery)
+
     .catch(onError);
 }
