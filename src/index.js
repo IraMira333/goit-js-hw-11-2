@@ -26,8 +26,7 @@ function onSubmit(evt) {
     searchImageService.page = 1;
     loadMoreBtn.show();
     clearDivGallery();
-    loadMoreBtn.disable();
-    getDataForMarkup().then(() => loadMoreBtn.enable());
+    onLoadMore();
   }
 }
 
@@ -44,28 +43,56 @@ function clearDivGallery() {
   refs.imagesEl.innerHTML = '';
 }
 
-function onLoadMore() {
+async function onLoadMore() {
   loadMoreBtn.disable();
-  getDataForMarkup().then(() => loadMoreBtn.enable());
+  try {
+    const markup = await getDataForMarkup();
+    if (!markup) {
+      throw new Error(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
+
+    updateDivGallery(markup);
+  } catch (err) {}
+  loadMoreBtn.enable();
 }
 
-function getDataForMarkup() {
-  return searchImageService
-    .searchFoto()
-    .then(hits => {
-      console.log(hits.length);
-      console.log(searchImageService.per_page);
-      if (hits.length < searchImageService.per_page) {
-        loadMoreBtn.end();
-      }
-      if (hits.length === 0) {
-        throw new Error(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
-      return hits.reduce((markup, hit) => markup + createMarkup(hit), '');
-    })
-    .then(updateDivGallery)
+async function getDataForMarkup() {
+  try {
+    const hits = await searchImageService.searchFoto();
+    console.log(hits);
+    console.log(hits.length);
+    console.log(searchImageService.per_page);
+    if (hits.length < searchImageService.per_page && hits.length > 0) {
+      loadMoreBtn.end();
+    }
+    if (hits.length === 0) {
+      throw new Error(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
+    return hits.reduce((markup, hit) => markup + createMarkup(hit), '');
+  } catch (err) {
+    onError(err);
+  }
 
-    .catch(onError);
+  // return searchImageService
+  //   .searchFoto()
+  //   .then(hits => {
+  //     console.log(hits.length);
+  //     console.log(searchImageService.per_page);
+  //     if (hits.length < searchImageService.per_page) {
+  //       loadMoreBtn.end();
+  //     }
+  //     if (hits.length === 0) {
+  //       throw new Error(
+  //         'Sorry, there are no images matching your search query. Please try again.'
+  //       );
+  //     }
+  //     return hits.reduce((markup, hit) => markup + createMarkup(hit), '');
+  //   })
+  //   .then(updateDivGallery)
+
+  //   .catch(onError);
 }
