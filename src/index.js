@@ -82,8 +82,22 @@ async function getDataForMarkup() {
     console.log(hits);
     console.log(hits.length);
     console.log(searchImageService.per_page);
-    if (hits.length < searchImageService.per_page && hits.length > 0) {
+    if (
+      hits.length < searchImageService.per_page &&
+      hits.length > 0 &&
+      searchImageService.page === 1
+    ) {
+      console.log(searchImageService.page, `tttttt`);
       loadMoreBtn.end();
+    }
+    if (
+      hits.length < searchImageService.per_page &&
+      hits.length > 0 &&
+      searchImageService.page !== 2
+    ) {
+      console.log(searchImageService.page);
+      loadMoreBtn.end();
+      Notify.info("We're sorry, but you've reached the end of search results.");
     }
     if (hits.length === 0) {
       throw new Error(
