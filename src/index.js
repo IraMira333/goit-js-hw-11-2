@@ -30,7 +30,6 @@ function onSubmit(evt) {
     searchImageService.query = value;
     searchImageService.page = 1;
     loadMoreBtn.show();
-    refs.backToTopEl.classList.remove('hidden');
 
     clearDivGallery();
     onLoadMore();
@@ -79,15 +78,12 @@ async function onLoadMore() {
 async function getDataForMarkup() {
   try {
     const hits = await searchImageService.searchFoto();
-    console.log(hits);
-    console.log(hits.length);
-    console.log(searchImageService.per_page);
+
     if (
       hits.length < searchImageService.per_page &&
       hits.length > 0 &&
-      searchImageService.page === 1
+      searchImageService.page === 2
     ) {
-      console.log(searchImageService.page, `tttttt`);
       loadMoreBtn.end();
     }
     if (
@@ -95,7 +91,6 @@ async function getDataForMarkup() {
       hits.length > 0 &&
       searchImageService.page !== 2
     ) {
-      console.log(searchImageService.page);
       loadMoreBtn.end();
       Notify.info("We're sorry, but you've reached the end of search results.");
     }
@@ -128,9 +123,37 @@ async function getDataForMarkup() {
 
   //   .catch(onError);
 }
-window.onload = function () {
-  var elevator = new Elevator({
-    element: document.querySelector('.elevator-button'),
-    duration: 1000, // milliseconds
+// window.onload = function () {
+//   var elevator = new Elevator({
+//     element: document.querySelector('.elevator-button'),
+//     duration: 1000, // milliseconds
+//   });
+// };
+
+document.addEventListener('DOMContentLoaded', () => {
+  let pageYOffset = 0;
+  let timeout;
+  window.onscroll = function () {
+    if (timeout) {
+      window.clearTimeout(timeout);
+    }
+    if (window.pageYOffset > 580) {
+      refs.backToTopEl.classList.remove('hidden');
+    } else {
+      refs.backToTopEl.classList.add('hidden');
+    }
+    pageYOffset = window.pageYOffset;
+    timeout = window.setTimeout(function () {
+      if (window.pageYOffset === pageYOffset) {
+        refs.backToTopEl.classList.add('hidden');
+      }
+    }, 3000);
+  };
+  // плавный скролл наверх
+  refs.backToTopEl.addEventListener('click', function () {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   });
-};
+});
