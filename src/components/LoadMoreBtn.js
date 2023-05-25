@@ -33,6 +33,5 @@ export default class LoadMoreBtn {
 
   end() {
     this.button.classList.add(LoadMoreBtn.classes.hidden);
-    Notify.info("We're sorry, but you've reached the end of search results.");
   }
 }
