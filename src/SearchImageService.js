@@ -9,7 +9,7 @@ export default class SearchImageService {
   constructor() {
     this.page = 1;
     this.query = '';
-    this.per_page = 6;
+    this.per_page = 40;
   }
   async searchFoto() {
     //* axios await
@@ -20,6 +20,11 @@ export default class SearchImageService {
       console.log(data.total);
       Notify.info(`Hoorey! We found ${data.total} images`);
     }
+    // if (
+    //   data.total <= this.per_page ||
+    //   this.page === data.total / this.per_page
+    // ) {
+    // }
     console.log(data.hits);
     this.incrementPage();
     return data.hits;
