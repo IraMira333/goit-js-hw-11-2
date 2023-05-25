@@ -1,12 +1,27 @@
 body {
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+.header {
+}
 .search-form {
+  z-index: 10;
+  height: 30px;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  margin: 0;
   display: flex;
   justify-content: center;
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: aqua;
+  background-color: rgb(56, 56, 177);
+}
+.icon {
+  display: flex;
+
+  width: 20px;
+  height: 20px;
 }
 .photo-card {
   border-radius: 4px;
@@ -19,6 +34,7 @@ body {
   transform: scale(1.1);
 }
 .gallery {
+  margin-top: 70px;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -41,14 +57,21 @@ img {
   object-fit: cover;
   transition: all 0.5s ease;
 }
+input {
+  width: 260px;
+  padding: 10px;
+}
 button {
-  background-color: #5385e3;
   cursor: pointer;
 }
 .load-more {
   margin: 0 auto;
   margin-top: 30px;
+  padding: 10px 20px;
   display: block;
+  border-radius: 4px;
+  background-color: #24a8cd;
+  border-color: #66b2bb;
 }
 .load-more:disabled {
   background-color: #c1c1c1;
@@ -56,4 +79,18 @@ button {
 }
 .hidden {
   display: none;
+  opacity: 0;
+}
+
+.elevator-button {
+  display: block;
+  position: fixed;
+  z-index: 10;
+  left: 10px;
+  bottom: 30px;
+  border-radius: 50%;
+  padding: 10px;
+  font-size: large;
+  border-color: rgb(247, 29, 29);
+  background-color: rgb(241, 144, 18);
 }
