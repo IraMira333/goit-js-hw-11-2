@@ -4,10 +4,12 @@ import SearchImageService from './SearchImageService.js';
 import LoadMoreBtn from './components/LoadMoreBtn.js';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import Elevator from 'elevator.js';
 
 const refs = {
   formEl: document.getElementById('search-form'),
   imagesEl: document.querySelector('.gallery'),
+  backToTopEl: document.querySelector('.elevator-button'),
 };
 let gallery;
 const searchImageService = new SearchImageService();
@@ -18,7 +20,7 @@ const loadMoreBtn = new LoadMoreBtn({
 
 refs.formEl.addEventListener('submit', onSubmit);
 loadMoreBtn.button.addEventListener('click', onLoadMore);
-
+refs.backToTopEl.classList.add('hidden');
 function onSubmit(evt) {
   evt.preventDefault();
   const value = evt.currentTarget.elements.searchQuery.value.trim();
@@ -28,6 +30,8 @@ function onSubmit(evt) {
     searchImageService.query = value;
     searchImageService.page = 1;
     loadMoreBtn.show();
+    refs.backToTopEl.classList.remove('hidden');
+
     clearDivGallery();
     onLoadMore();
   }
@@ -110,3 +114,9 @@ async function getDataForMarkup() {
 
   //   .catch(onError);
 }
+window.onload = function () {
+  var elevator = new Elevator({
+    element: document.querySelector('.elevator-button'),
+    duration: 1000, // milliseconds
+  });
+};
