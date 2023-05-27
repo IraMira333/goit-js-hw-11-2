@@ -62,6 +62,7 @@ async function onLoadMore() {
     updateDivGallery(markup);
     gallery = new SimpleLightbox('a', {
       showCounter: true,
+      captionsData: 'alt',
       captions: true,
     }).refresh();
     const { height: cardHeight } =
@@ -77,28 +78,26 @@ async function onLoadMore() {
 
 async function getDataForMarkup() {
   try {
-    const hits = await searchImageService.searchFoto();
-
-    if (
-      hits.length < searchImageService.per_page &&
-      hits.length > 0 &&
-      searchImageService.page === 2
-    ) {
+    const data = await searchImageService.searchFoto();
+    console.log(data.total);
+    console.log(data.hits.length);
+    if (data.totalHits < searchImageService.per_page) {
       loadMoreBtn.end();
     }
     if (
-      hits.length < searchImageService.per_page &&
-      hits.length > 0 &&
-      searchImageService.page !== 2
+      searchImageService.page ===
+      Math.ceil(data.totalHits / searchImageService.per_page) + 1
     ) {
       loadMoreBtn.end();
       Notify.info("We're sorry, but you've reached the end of search results.");
     }
-    if (hits.length === 0) {
+    if (data.hits.length === 0) {
       throw new Error(
         'Sorry, there are no images matching your search query. Please try again.'
       );
     }
+    const hits = data.hits;
+    console.log(hits);
     return hits.reduce((markup, hit) => markup + createMarkup(hit), '');
   } catch (err) {
     onError(err);
@@ -123,12 +122,6 @@ async function getDataForMarkup() {
 
   //   .catch(onError);
 }
-// window.onload = function () {
-//   var elevator = new Elevator({
-//     element: document.querySelector('.elevator-button'),
-//     duration: 1000, // milliseconds
-//   });
-// };
 
 document.addEventListener('DOMContentLoaded', () => {
   let pageYOffset = 0;
