@@ -20,14 +20,15 @@ export default class SearchImageService {
       console.log(data.total);
       Notify.info(`Hoorey! We found ${data.total} images`);
     }
-    // if (
-    //   data.total <= this.per_page ||
-    //   this.page === data.total / this.per_page
-    // ) {
-    // }
-    console.log(data.hits);
+    if (
+      data.total <= this.per_page ||
+      this.page === Math.ceil(data.totalHits / this.per_page)
+    ) {
+      console.log('We are here');
+    }
+    console.log(data);
     this.incrementPage();
-    return data.hits;
+    return data;
 
     // * axios then
     // return axios
