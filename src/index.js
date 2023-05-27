@@ -79,14 +79,18 @@ async function onLoadMore() {
 async function getDataForMarkup() {
   try {
     const data = await searchImageService.searchFoto();
-    console.log(data.total);
-    console.log(data.hits.length);
-    if (data.totalHits < searchImageService.per_page) {
+
+    if (
+      data.total < searchImageService.per_page &&
+      searchImageService.page === 2
+    ) {
       loadMoreBtn.end();
     }
     if (
+      data.total >= searchImageService.per_page &&
+      searchImageService.page !== 2 &&
       searchImageService.page ===
-      Math.ceil(data.totalHits / searchImageService.per_page) + 1
+        Math.ceil(data.totalHits / searchImageService.per_page) + 1
     ) {
       loadMoreBtn.end();
       Notify.info("We're sorry, but you've reached the end of search results.");
@@ -97,7 +101,7 @@ async function getDataForMarkup() {
       );
     }
     const hits = data.hits;
-    console.log(hits);
+
     return hits.reduce((markup, hit) => markup + createMarkup(hit), '');
   } catch (err) {
     onError(err);
